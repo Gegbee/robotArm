@@ -4,11 +4,11 @@ Servo servoYB;
 Servo servoX;
 Servo servoYT;
 
-float servoSensitivity = 2.0;
+float servoSensitivity = 4.0;
 
-int servoRotLX = 90;
-int servoRotLY = 90;
-int servoRotRX = 90;
+int servoRotY = 90;
+int servoRotX = 90;
+int servoRotZ = 90;
 
 void setup() {
   servoYT.attach(8);
@@ -18,26 +18,29 @@ void setup() {
   servoYB.write(90);
   servoYT.write(90);
   Serial.begin(9600);
-  Serial.setTimeout(10);
+  Serial.setTimeout(15);
 }
 
 void loop() {
   if (Serial.available() > 0) {
     String data = Serial.readString();
-    servoRotLX += getLX(data) * servoSensitivity;
-    servoRotLY += getLY(data) * servoSensitivity;
-    servoRotRX += getRX(data) * servoSensitivity;
-    servoRotRX = constrain(servoRotRX, 0 , 179);
-    int forcedYB = servoRotLX + servoRotLY;
-    int forcedYT = 180 - servoRotLX + servoRotLY;
-    if (servoYB.read() != forcedYT) {
-      servoYB.write(forcedYB);
+    int sb = (getLY(data) * servoSensitivity);
+    int st = (getRY(data) * servoSensitivity);
+    int sx = (getRX(data) * servoSensitivity);
+    servoRotZ += st;
+    servoRotY += sb;
+    servoRotX += sx;
+    servoRotX = constrain(servoRotX, 0 , 179);
+    servoRotY = constrain(servoRotY, 0 , 179);
+    servoRotZ = constrain(servoRotZ, 0 , 179);
+    if (servoYB.read() != servoRotZ) {
+      servoYB.write(servoRotZ);
     }
-    if (servoYT.read() != forcedYT) {
-      servoYT.write(forcedYT);
+    if (servoYT.read() != servoRotY) {
+      servoYT.write(servoRotY);
     }
-    if (servoX.read() != servoRotRX) {
-      servoX.write(servoRotRX);
+    if (servoX.read() != servoRotX) {
+      servoX.write(servoRotX);
     }
   }
 }
@@ -45,11 +48,11 @@ int getRX(String d) {
   d = d.substring(2, 3);
   return parseNumbers(d.toInt());
 }
-int getLY(String d) {
+int getLX(String d) {
   d = d.substring(5, 6);
   return parseNumbers(d.toInt());
 }
-int getLX(String d) {
+int getLY(String d) {
   d = d.substring(8, 9);
   return parseNumbers(d.toInt());
 }
