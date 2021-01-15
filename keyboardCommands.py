@@ -22,7 +22,7 @@ while run:
     rx = str(1 - int(round(main_j.get_axis(2), 0)))
     ry = str(1 - int(round(main_j.get_axis(3), 0)))
     print("Left x: " + lx, "Left y: " + ly, "Right x: " + rx, "Right y: " + ry)
-    data = f"RX{rx}LY{ly}LY{ly}"
+    data = f"RX{rx}LX{lx}LY{ly}RY{ry}"
     arduino.write(data.encode())
     # mx, my = pygame.mouse.get_pos()
     # mouse_pos = [int(mx  / (500 / 180)), int(my / (500 / 180))]
@@ -31,5 +31,5 @@ while run:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-    pygame.time.delay(40)
+    pygame.time.delay(50)
 pygame.quit()
